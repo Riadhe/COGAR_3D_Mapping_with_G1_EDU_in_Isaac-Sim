@@ -15,3 +15,7 @@ Software needed: Isaac Sim, RTAB‑Map / OctoMap / Voxblox / NVBlox, Open3D, RVi
 Research needed: 3D mapping methods for mobile robots, RGB‑D / LiDAR reconstruction, voxel mapping, simulation‑based map evaluation
 
 Deliverables: Standalone 3D mapping pipeline, benchmark maps of multiple environments, comparative report on map quality and representation suitability
+
+# Stating point:
+For the robot you should open Isaac Sim, import the robot from the repo unitree/G1 and use the G1 model physics, then you should add the three-fingered force control and dexterous hands. 
+-> 3D LIDAR (LIVOX-MID360) + Depth Camera Intel RealSense (D435i)
