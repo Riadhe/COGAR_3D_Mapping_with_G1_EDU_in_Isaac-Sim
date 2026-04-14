@@ -18,4 +18,5 @@ Deliverables: Standalone 3D mapping pipeline, benchmark maps of multiple environ
 
 # Stating point:
 For the robot you should open Isaac Sim, import the robot from the repo unitree/G1 and use the G1 model physics, then you should add the three-fingered force control and dexterous hands. 
+
 -> 3D LIDAR (LIVOX-MID360) + Depth Camera Intel RealSense (D435i)
