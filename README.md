@@ -17,6 +17,5 @@ Research needed: 3D mapping methods for mobile robots, RGB‑D / LiDAR reconstru
 Deliverables: Standalone 3D mapping pipeline, benchmark maps of multiple environments, comparative report on map quality and representation suitability
 
 # Stating point:
-For the robot you should open Isaac Sim, import the robot from the repo unitree/G1 29 degrees of freedom (DOF) and use the G1 model physics, then you should add the three-fingered force control and dexterous hands (the Dex 3-1 hands, the total DOF increases to 43, version is F-1515-214) . 
-
+For the robot you should open Isaac Sim, import the robot from the repo unitree/G1 29 degrees of freedom (DOF) and use the G1 model physics.
 -> 3D LIDAR (LIVOX-MID360) + Depth Camera Intel RealSense (D435i)
