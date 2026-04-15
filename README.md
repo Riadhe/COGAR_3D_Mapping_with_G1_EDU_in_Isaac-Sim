@@ -18,4 +18,5 @@ Deliverables: Standalone 3D mapping pipeline, benchmark maps of multiple environ
 
 # Stating point:
 For the robot you should open Isaac Sim, import the robot from the repo unitree/G1 29 degrees of freedom (DOF) and use the G1 model physics.
--> 3D LIDAR (LIVOX-MID360) + Depth Camera Intel RealSense (D435i)
+
+- 3D LIDAR (LIVOX-MID360) + Depth Camera Intel RealSense (D435i)
