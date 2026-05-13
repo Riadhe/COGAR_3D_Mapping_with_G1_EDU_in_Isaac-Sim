@@ -20,3 +20,32 @@ Deliverables: Standalone 3D mapping pipeline, benchmark maps of multiple environ
 For the robot you should open Isaac Sim, import the robot from the repo unitree/G1 29 degrees of freedom (DOF) and use the G1 model physics.
 
 - 3D LIDAR (LIVOX-MID360) + Depth Camera Intel RealSense (D435i)
+---
+
+## Week 1 — Setup and sensor pipeline 
+
+**Goal:** Get the G1 EDU publishing all needed ROS2 topics for 3D mapping.
+
+### Stack
+- **Host OS:** Ubuntu 24.04
+- **Simulator:** NVIDIA Isaac Sim 5.x (native install)
+- **Container:** Distrobox + Ubuntu 22.04 with ROS2 Humble
+- **Robot:** Unitree G1 29-DOF (`g1_29dof_with_hand_rev_1_0`)
+- **Sensors:** Hesai Pandar XT-32 LiDAR + RealSense RSD455 RGB-D
+
+### Topics published
+
+| Topic | Rate | Source |
+|---|---|---|
+| `/point_cloud` | ~18 Hz | RTX LiDAR sensor |
+| `/camera/color/image_raw` | ~12 Hz | RealSense color camera |
+| `/camera/depth/image_raw` | ~11 Hz | RealSense pseudo-depth |
+| `/joint_states` | ~18 Hz | G1 articulation (29 DOFs) |
+| `/clock` | sim time | Isaac Sim clock |
+| `/tf` + `/tf_static` | ~20 Hz | robot_state_publisher (container) |
+
+### TF tree
+Anchored to `world` via static transform, then `pelvis → ... → torso_link → {d435_link, mid360_link}`. Sensor frames are correctly placed via Unitree's official URDF.
+
+### Notes
+The Articulation Root API is applied to the `pelvis` prim (not the top-level Xform), which is what the OmniGraph Joint States dialog needs to target.
