@@ -1,0 +1,10 @@
+# USD files are large, keep local only
+*.usd
+*.usda
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS junk
+.DS_Store
