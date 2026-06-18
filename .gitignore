@@ -1,10 +1,41 @@
-# USD files are large, keep local only
-*.usd
-*.usda
+# === Large data — kept on disk / external, never in git ===
+bags/
+*.db3
+*.mcap
+*.bt
+*.pcd
+*.mp4
 
-# Python cache
+# Maps: ignore large formats by default...
+maps/**/*.ply
+# ...but commit the small verified NVBlox deliverable
+!maps/simple_room/nvblox_mesh.ply
+
+# keep folder structure + docs even when data is absent
+!bags/README.md
+!maps/README.md
+!**/.gitkeep
+
+# === ROS2 / colcon build artifacts ===
+build/
+install/
+log/
+
+# === Python ===
 __pycache__/
 *.pyc
+*.egg-info/
+.venv/
+venv/
 
-# OS junk
+# === Isaac Sim / Omniverse ===
+*.usd
+*.usdc
+*.usda
+.nvidia-omniverse/
+
+# === Editor / OS ===
+.idea/
+*.swp
 .DS_Store
+*.nvblx
