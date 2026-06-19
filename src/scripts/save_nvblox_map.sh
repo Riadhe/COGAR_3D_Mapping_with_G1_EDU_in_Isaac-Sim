@@ -11,7 +11,8 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
-OUT="${OUT:-$REPO_ROOT/maps/simple_room/nvblox_mesh.ply}"
+SCENE="${SCENE:-simple_room}"
+OUT="${OUT:-$REPO_ROOT/maps/$SCENE/nvblox/nvblox_mesh.ply}"
 mkdir -p "$(dirname "$OUT")"
 
 source /opt/ros/humble/setup.bash

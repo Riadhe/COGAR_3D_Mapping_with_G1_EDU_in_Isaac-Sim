@@ -1,0 +1,4 @@
+framework,topic,n_msgs,mean_ms,median_ms,max_ms,mean_hz
+NVBlox,/nvblox_node/mesh,341,462.2,495.9,2681.6,8.83
+RTAB-Map,/rtabmap/mapData,24,6578.5,6379.5,8870.9,0.16
+OctoMap,/octomap_point_cloud_centers,349,455.6,458.8,1314.4,2.31

@@ -1,0 +1,4 @@
+framework,points,ext_x,ext_y,ext_z,volume_m3,density_per_m3
+NVBlox,32343,9.09,9.678,4.199,369.3,87.6
+RTAB-Map,436485,9.425,10.125,4.262,406.8,1073.1
+OctoMap,57877,9.03,8.28,1.65,123.4,469.1

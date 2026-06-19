@@ -1,0 +1,4 @@
+framework,points,density_per_m3,coverage_voxels,coverage_vol_m3,bbox_vol_m3
+NVBlox,32343,87.6,25326,3.17,369.3
+RTAB-Map,436485,1073.1,75887,9.49,406.8
+OctoMap,57877,469.1,23402,2.93,123.4

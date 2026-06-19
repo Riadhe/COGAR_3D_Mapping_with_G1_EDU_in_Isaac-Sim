@@ -39,3 +39,4 @@ venv/
 *.swp
 .DS_Store
 *.nvblx
+evaluation/scripts/_archive/
