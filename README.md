@@ -26,15 +26,6 @@ For the robot you should open Isaac Sim, import the robot from the repo unitree/
 
 This repo benchmarks multiple 3D mapping frameworks on the same recorded sensor data from the G1 EDU in Isaac Sim. Each framework replays an identical rosbag offline and exports its maps in comparable representations (cloud / mesh / occupancy / ESDF), which are then evaluated against shared geometric and navigation-readiness metrics.
 
-**Status at a glance:**
-
-| | Done | Pending |
-|---|---|---|
-| Scenes | `simple_room` | `warehouse` |
-| Frameworks | NVBlox, RTAB-Map, OctoMap | — |
-| Phase | map generation | metrics / comparative report |
-
----
 
 ## 2. Setup
 
@@ -62,15 +53,21 @@ TF is anchored to `World` via static transform, then `pelvis → ... → torso_l
 **Optical-frame convention (critical):** Isaac Sim publishes camera data on body frames (x-forward / z-up), but mapping frameworks expect optical frames (z-forward / x-right / y-down). The optical-frame static transforms are carried in the recorded `/tf_static`, so frameworks consume them directly off the bag. This was the root cause of an early rotated-map problem.
 
 ---
+### Hardware Constraints & Reproducibility
+All simulations, bag recordings, and map generations were executed on a local machine with constrained hardware (4GB VRAM GPU, 14GB RAM). 
+- **Impact:** The 4GB VRAM limit directly bottlenecked GPU-heavy frameworks like NVBlox, causing higher latency and occasional frame drops during recording. 
+- **Justification:** These constraints are documented as genuine findings. The pipeline's logic is fully sound, and running this identical setup on higher-end hardware (e.g., 16GB+ VRAM) will naturally yield real-time performance and denser maps.
 
 ## 3. Benchmark scenes
 
 | Scene | Source | Bag | Status |
 |---|---|---|---|
 | `simple_room` | Isaac Assets *Simple Room* | 160 s, 9014 msgs, 8 topics | ✅ recorded & mapped |
-| `warehouse` | Isaac Assets | — | ⬜ pending |
+| `warehouse` | Isaac Assets *Simple Warehouse* | 128 s, 8611 msgs, 9 topics | ✅ recorded & mapped |
 
-**Recording:** load the scene into the G1 stage, drive a trajectory (`isaac_sim/scripts/motion_circle.py`), and `ros2 bag record` all sensor topics. `/clock` is recorded, so replay drives sim time (no `--clock` needed for NVBlox; RTAB-Map run uses `--clock` with `/clock` excluded from the topic list).
+**Recording:** load the scene into the G1 stage, drive a trajectory (`isaac_sim/scripts/360_rotation.py`), and `ros2 bag record` all sensor topics. `/clock` is recorded, so replay drives sim time (no `--clock` needed for NVBlox; RTAB-Map run uses `--clock` with `/clock` excluded from the topic list).
+
+> **Warehouse bag note:** recorded on memory-constrained hardware; ~2635 messages were dropped at record time due to cache-buffer overload (even loss across topics, ~25%). The bag remains usable (~1250 frames/sensor) and produces valid maps; this is documented as a hardware-constraint artifact.
 
 Bags are large and **not committed** to git — recorded separately and stored outside the repo.
 
@@ -112,7 +109,6 @@ Saved artifact (`octomap_saver_node`, **absolute path** required — ROS params 
 - `octomap_occupancy.bt` — binary occupancy octree
 
 **Note:** the resulting octree (~1.3M nodes @ 0.03 m) compresses to ~293 KB on disk, far smaller than the RGB-D point clouds for the same room — OctoMap collapses large uniform free/occupied regions into single nodes.
-
 ---
 
 ## How to run
@@ -169,9 +165,66 @@ maps/
 
 | Scene | Framework | Cloud | Mesh | Occupancy / ESDF |
 |---|---|---|---|---|
-| simple_room | NVBlox | (from mesh) | ✅ 32k v / 50k f | ESDF in `.nvblx` |
-| simple_room | RTAB-Map | ✅ 436k pts | ✅ ~976k polys | ✅ 2D grid 212×229 @ 0.05 m |
-| simple_room | OctoMap | (octree centers) | — | ✅ `.bt` octree, ~1.3M nodes @ 0.03 m |
+| simple_room | NVBlox | (from mesh) |  32k v / 50k f | ESDF in `.nvblx` |
+| simple_room | RTAB-Map |  436k pts |  ~976k polys |  2D grid 212×229 @ 0.05 m |
+| simple_room | OctoMap | (octree centers) | — | `.bt` octree, ~1.3M nodes @ 0.03 m |
+| warehouse | NVBlox | (from mesh) |  mesh `.ply` | ESDF in `.nvblx` |
+| warehouse | RTAB-Map |  516k pts |  mesh `.ply` |  2D grid 283×220 @ 0.05 m |
+| warehouse | OctoMap | (octree centers) | — |  `.bt` octree |
 
 ---
+## 6. Evaluation
+
+
+Evaluation is **scene-independent**: metrics compare the three frameworks *within* each scene (identical bag = identical input). Scripts live in `evaluation/scripts/`, outputs in `evaluation/results/`.
+
+**Dependencies:** To run the evaluation scripts, ensure you have the following Python packages installed:
+`pip install open3d matplotlib numpy`
+
+### Metrics computed
+- **Density** — points per m³ per framework
+- **Coverage / completeness proxy** — occupied-voxel count and occupied volume at 5 cm (ground-truth-free; see note)
+- **Consistency** — pairwise framework agreement via point-to-plane ICP registration + multi-resolution voxel IoU
+- **Update latency** — per-framework map-update interval (median/mean/max), measured live during bag replay
+
+> **On completeness:** absolute accuracy-vs-ground-truth was attempted (Isaac USD export → `make_gt_cloud.py`) but the exported mesh was volumetric and frame-misaligned, making surface comparison unreliable. The evaluation therefore uses ground-truth-free metrics (density, coverage, inter-framework consistency), which are robust and reproducible.
+
+### Scripts
+
+| Script | Purpose |
+|---|---|
+| `metrics_open3d.py` | Per-framework density/extent/volume + pairwise ICP & voxel IoU → `<scene>_per_framework.csv` |
+| `make_figures.py` | Completeness/coverage CSV + density/coverage/latency charts (PNG) |
+| `measure_latency.py` | Times a framework's map-update topic during replay → `<scene>_latency.csv` |
+| `render_maps.py` | Offscreen Open3D renders of each saved map (PNG) |
+| `save_octomap_cloud.py` | Captures OctoMap occupied-cell centers from `/octomap_point_cloud_centers` → `.ply` (for voxel metrics) |
+| `make_gt_cloud.py` | (Archived approach) samples a ground-truth cloud from the Isaac USD export |
+| `_archive/` | Superseded diagnostic/early-version scripts, kept for reference (gitignored) |
+
+### Running the evaluation
+All scripts honor the `SCENE` variable (default `simple_room`). Run after the maps for a scene exist:
+
+```bash
+python3 evaluation/scripts/metrics_open3d.py                 # simple_room
+
+SCENE=warehouse python3 evaluation/scripts/metrics_open3d.py # warehouse
+
+SCENE=warehouse python3 evaluation/scripts/make_figures.py
+
+SCENE=warehouse python3 evaluation/scripts/render_maps.py
+```
+Latency must run **while a framework replays the bag** (start the timer, then launch the run script):
+
+```bash
+python3 evaluation/scripts/measure_latency.py /nvblox_node/mesh NVBlox
+
+python3 evaluation/scripts/measure_latency.py /rtabmap/mapData RTAB-Map
+
+python3 evaluation/scripts/measure_latency.py /octomap_point_cloud_centers OctoMap
+```
+### Outputs (`evaluation/results/`)
+- `<scene>_per_framework.csv` — density, extent, volume
+- `<scene>_completeness.csv` — coverage (voxels + volume)
+- `<scene>_latency.csv` — update-interval stats
+- `figures/<scene>_{density,coverage,latency}.png` — charts
 
