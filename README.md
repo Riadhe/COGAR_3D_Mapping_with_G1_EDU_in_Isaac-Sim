@@ -49,7 +49,7 @@ TF is anchored to `World` via static transform, then `pelvis → ... → torso_l
 
 **Optical-frame convention (critical):** Isaac Sim publishes camera data on body frames (x-forward / z-up), but mapping frameworks expect optical frames (z-forward / x-right / y-down). The optical-frame static transforms are carried in the recorded `/tf_static`, so frameworks consume them directly off the bag. This was the root cause of an early rotated-map problem.
 
-### Hardware constraints & reproducibility
+### Hardware constraints and reproducibility
 All simulations, bag recordings, and map generation were executed on a local machine with constrained hardware (4 GB VRAM GPU, 14 GB RAM).
 - **Impact:** the 4 GB VRAM limit bottlenecked GPU-heavy frameworks such as NVBlox, causing elevated update intervals and occasional frame drops during recording.
 - **Justification:** these constraints are documented as genuine findings. The pipeline logic is sound, and running the identical setup on higher-end hardware (e.g. 16 GB+ VRAM) would naturally yield faster updates and denser maps.
