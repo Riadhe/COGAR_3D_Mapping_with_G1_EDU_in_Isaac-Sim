@@ -73,6 +73,11 @@ Bags are large and **not committed** to git. The recorded rosbags for both scene
 
 Download a scene's bag into `bags/<scene>/` to reproduce the mapping and evaluation.
 
+### Supplementary videos
+Screencasts of each framework building its map live in RViz (per scene) are available on Google Drive:
+
+🎥 **[Map reconstruction videos (Google Drive)](https://drive.google.com/drive/folders/1AfI7A8DRqWLpBDEphF1a1R0AGujFsYOs?usp=sharing)**
+
 ---
 
 ## 4. Mapping frameworks
