@@ -50,7 +50,7 @@ TF is anchored to `World` via static transform, then `pelvis → ... → torso_l
 **Optical-frame convention (critical):** Isaac Sim publishes camera data on body frames (x-forward / z-up), but mapping frameworks expect optical frames (z-forward / x-right / y-down). The optical-frame static transforms are carried in the recorded `/tf_static`, so frameworks consume them directly off the bag. This was the root cause of an early rotated-map problem.
 
 ### Hardware constraints and reproducibility
-All simulations, bag recordings, and map generation were executed on a local machine with constrained hardware (4 GB VRAM GPU, 14 GB RAM).
+All simulations, bag recordings, and map generation were executed on a local machine with constrained hardware (4 GB VRAM GPU, 16 GB RAM).
 - **Impact:** the 4 GB VRAM limit bottlenecked GPU-heavy frameworks such as NVBlox, causing elevated update intervals and occasional frame drops during recording.
 - **Justification:** these constraints are documented as genuine findings. The pipeline logic is sound, and running the identical setup on higher-end hardware (e.g. 16 GB+ VRAM) would naturally yield faster updates and denser maps.
 
@@ -67,7 +67,11 @@ All simulations, bag recordings, and map generation were executed on a local mac
 
 > **Warehouse bag note:** recorded on memory-constrained hardware; ~2635 messages were dropped at record time due to cache-buffer overload (even loss across topics, ~25 %). The bag remains usable (~1250 frames/sensor) and produces valid maps; this is documented as a hardware-constraint artifact.
 
-Bags are large and **not committed** to git — recorded separately and stored outside the repo.
+Bags are large and **not committed** to git. The recorded rosbags for both scenes (and the large map outputs) are available via Google Drive:
+
+📁 **[Recorded bags & maps (Google Drive)](https://drive.google.com/drive/folders/1lV0LgfAtYvlcbzVeVl2cnP28Wyz3jDOG?usp=sharing)**
+
+Download a scene's bag into `bags/<scene>/` to reproduce the mapping and evaluation.
 
 ---
 
