@@ -76,7 +76,7 @@ Download a scene's bag into `bags/<scene>/` to reproduce the mapping and evaluat
 ### Supplementary videos
 Screencasts of each framework building its map live in RViz (per scene) are available on Google Drive:
 
-🎥 **[Map reconstruction videos (Google Drive)](https://drive.google.com/drive/folders/1AfI7A8DRqWLpBDEphF1a1R0AGujFsYOs?usp=sharing)**
+🎥 **[Map reconstruction videos (Google Drive)](https://drive.google.com/drive/folders/1IV79HvOgfVTl5kSdqGLv4RGgMUqzcWSi?usp=sharing)**
 
 ---
 
