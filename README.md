@@ -18,13 +18,13 @@ Develop and evaluate a standalone 3D mapping pipeline for the G1 EDU robot in Is
 
 ---
 
-## 1. Overview
+## 📋 1. Overview
 
 This repo benchmarks multiple 3D mapping frameworks on the same recorded sensor data from the G1 EDU in Isaac Sim. Each framework replays an identical rosbag offline and exports its maps in comparable representations (cloud / mesh / occupancy / ESDF), which are then evaluated against shared geometric and navigation-readiness metrics.
 
 ---
 
-## 2. Setup
+## ⚙️ 2. Setup
 
 ### Stack
 - **Host OS:** Ubuntu 24.04
@@ -56,7 +56,7 @@ All simulations, bag recordings, and map generation were executed on a local mac
 
 ---
 
-## 3. Benchmark scenes
+## 🏗️ 3. Benchmark scenes
 
 | Scene | Source | Bag | Status |
 |---|---|---|---|
@@ -80,7 +80,7 @@ Screencasts of each framework building its map live in RViz (per scene) are avai
 
 ---
 
-## 4. Mapping frameworks
+## 🗺️ 4. Mapping frameworks
 
 | Framework | Install | Native output | Sensor | Status |
 |---|---|---|---|---|
@@ -119,7 +119,7 @@ Saved artifact (`octomap_saver_node`, **absolute path** required — ROS params 
 
 ---
 
-## 5. How to run
+## ▶️ 5. How to run
 
 All scripts are **scene-generic** via a `SCENE` variable (default `simple_room`). To benchmark a new scene: record its bag to `bags/<scene>/` (same topics as above), then run with `SCENE=<scene>`. Maps save to `maps/<scene>/<framework>/`.
 
@@ -159,7 +159,7 @@ SCENE=warehouse ./src/scripts/save_octomap_map.sh
 
 ---
 
-## 6. Map outputs
+## 📦 6. Map outputs
 
 Maps live under `maps/<scene>/<framework>/`. Large map files are stored outside git; the structure and naming are tracked.
 
@@ -181,7 +181,7 @@ maps/
 | warehouse | OctoMap | (octree centers) | — |  `.bt` octree |
 
 ---
-## 7. Evaluation
+## 📊 7. Evaluation
 
 Evaluation is **scene-independent**: metrics compare the three frameworks *within* each scene (identical bag = identical input). Scripts live in `evaluation/scripts/`, outputs in `evaluation/results/`.
 
